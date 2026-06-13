@@ -1,65 +1,273 @@
-import Image from "next/image";
+"use client";
 
+import Image from "next/image";
+import Link from "next/link";
+import { useContext, useState } from "react";
+import { CartContext } from "@/context/CartContext";
+
+import products from "@/data/products";
+import ProductCard from "@/components/ProductCard";
 export default function Home() {
+  const { cart } = useContext(CartContext);
+  const [search, setSearch] = useState("");
+  const [selectedCategory, setSelectedCategory] =
+  useState("All");
+  const filteredProducts = products.filter((product) => {
+  const matchesSearch = product.name
+    .toLowerCase()
+    .includes(search.toLowerCase());
+
+  const matchesCategory =
+    selectedCategory === "All" ||
+    product.category === selectedCategory;
+
+  return matchesSearch && matchesCategory;
+});
+
   return (
-    <div className="flex flex-col flex-1 items-center justify-center bg-zinc-50 font-sans dark:bg-black">
-      <main className="flex flex-1 w-full max-w-3xl flex-col items-center justify-between py-32 px-16 bg-white dark:bg-black sm:items-start">
-        <Image
-          className="dark:invert"
-          src="/next.svg"
-          alt="Next.js logo"
-          width={100}
-          height={20}
-          priority
-        />
-        <div className="flex flex-col items-center gap-6 text-center sm:items-start sm:text-left">
-          <h1 className="max-w-xs text-3xl font-semibold leading-10 tracking-tight text-black dark:text-zinc-50">
-            To get started, edit the page.js file.
+    <main className="relative overflow-hidden min-h-screen bg-gradient-to-b from-[#F8FAFC] via-[#F3F0FF] to-[#FFFFFF] pt-24">
+      <div className="absolute top-20 left-10 w-72 h-72 bg-[#A78BFA]/20 rounded-full blur-3xl"></div>
+
+    <div className="absolute bottom-20 right-10 w-72 h-72 bg-[#8B5CF6]/20 rounded-full blur-3xl"></div>
+<div className="relative z-10">
+      {/* Navbar */}
+      <nav className="fixed top-0 left-0 w-full z-50 flex justify-between items-center px-8 py-5 bg-[#6D28D9]/95 backdrop-blur-md shadow-md">
+
+        <div className="flex items-center gap-3">
+
+          <Image
+            src="/logo.png"
+            alt="NovaCart"
+            width={50}
+            height={50}
+          />
+
+          <h1 className="text-3xl font-bold text-white">
+            NovaCart
           </h1>
-          <p className="max-w-md text-lg leading-8 text-zinc-600 dark:text-zinc-400">
-            Looking for a starting point or more instructions? Head over to{" "}
-            <a
-              href="https://vercel.com/templates?framework=next.js&utm_source=create-next-app&utm_medium=appdir-template-tw&utm_campaign=create-next-app"
-              className="font-medium text-zinc-950 dark:text-zinc-50"
-            >
-              Templates
-            </a>{" "}
-            or the{" "}
-            <a
-              href="https://nextjs.org/learn?utm_source=create-next-app&utm_medium=appdir-template-tw&utm_campaign=create-next-app"
-              className="font-medium text-zinc-950 dark:text-zinc-50"
-            >
-              Learning
-            </a>{" "}
-            center.
-          </p>
+
         </div>
-        <div className="flex flex-col gap-4 text-base font-medium sm:flex-row">
-          <a
-            className="flex h-12 w-full items-center justify-center gap-2 rounded-full bg-foreground px-5 text-background transition-colors hover:bg-[#383838] dark:hover:bg-[#ccc] md:w-[158px]"
-            href="https://vercel.com/new?utm_source=create-next-app&utm_medium=appdir-template-tw&utm_campaign=create-next-app"
-            target="_blank"
-            rel="noopener noreferrer"
-          >
-            <Image
-              className="dark:invert"
-              src="/vercel.svg"
-              alt="Vercel logomark"
-              width={16}
-              height={16}
-            />
-            Deploy Now
-          </a>
-          <a
-            className="flex h-12 w-full items-center justify-center rounded-full border border-solid border-black/[.08] px-5 transition-colors hover:border-transparent hover:bg-black/[.04] dark:border-white/[.145] dark:hover:bg-[#1a1a1a] md:w-[158px]"
-            href="https://nextjs.org/docs?utm_source=create-next-app&utm_medium=appdir-template-tw&utm_campaign=create-next-app"
-            target="_blank"
-            rel="noopener noreferrer"
-          >
-            Documentation
-          </a>
-        </div>
-      </main>
+
+        <button className="bg-[#0F172A] text-white px-5 py-2 rounded-lg">
+          <Link href="/cart">
+           Cart 🛒 (
+{
+  cart.reduce(
+    (total, item) => total + item.quantity,
+    0
+  )
+}
+)
+          </Link>
+        </button>
+
+      </nav>
+
+      {/* Hero Section */}
+
+      <section className="text-center py-20 px-6">
+
+  <div className="inline-block px-4 py-2 rounded-full bg-[#6D28D9]/10 text-[#6D28D9] font-medium mb-6">
+    ✨ Premium Shopping Experience
+  </div>
+
+  <h1 className="text-6xl md:text-7xl font-extrabold text-[#0F172A] leading-tight">
+    Discover.
+    <span className="text-[#6D28D9]"> Shop</span>
+    .Enjoy
+  </h1>
+
+  <p className="mt-6 text-xl text-gray-600 max-w-2xl mx-auto">
+    Explore premium products at unbeatable prices with a modern shopping experience.
+  </p>
+
+</section>
+      {/* Search */}
+      <section className="px-10 py-6">
+
+  <div className="flex justify-center text-[#0F172A]">
+
+    <input
+      type="text"
+      placeholder="🔍Search products..."
+      value={search}
+      onChange={(e) =>
+        setSearch(e.target.value)
+      }
+      className="
+      w-full
+      max-w-md
+      p-3
+      border
+      border-gray-300
+      rounded-xl
+      shadow-md
+      outline-none
+      focus:ring-2
+      focus:ring-[#6D28D9]
+      placeholder:text-[#0F172A]
+      "
+    />
+
+  </div>
+
+</section>
+{search && 
+  search !== filteredProducts[0]?.name && (
+  <div className="max-w-md mx-auto bg-white shadow rounded-xl mt-2">
+    {filteredProducts.map((product) => (
+      <div
+        key={product.id}
+        onClick={() => setSearch(product.name)}
+        className="max-w-md mx-auto bg-[#6D28D9] shadow rounded-xl mt-2 p-3 text-[#0F172A]">
+        {product.name}
+      </div>
+    ))}
+  </div>
+)}
+{search && filteredProducts.length === 0 && (
+  <div className="max-w-md mx-auto bg-[#6D28D9] shadow rounded-xl mt-2 p-3 text-[#0F172A]">
+    🔍 No products match your search.
+  </div>
+)}
+
+{/* Categories Filter */}
+<h2 className="text-center text-2xl font-bold text-[#0F172A] mb-4">
+  Browse Categories
+</h2>
+<section className="px-10 py-4">
+
+  <div className="flex justify-center gap-3 flex-wrap">
+
+    {[
+      "All",
+      "Electronics",
+      "Fashion"
+    ].map((category) => (
+      <button
+        key={category}
+        onClick={() =>
+          setSelectedCategory(category)
+        }
+        className={`px-5 py-2 rounded-xl transition-all duration-300 hover:scale-105 ${
+          selectedCategory === category
+            ? "bg-[#6D28D9] text-white"
+            : "bg-white text-[#0F172A] border"
+        }`}
+      >
+        {category}
+      </button>
+    ))}
+
+  </div>
+
+</section>
+    {/* Products Grid */}
+    <section className="px-10 py-8">
+
+  <h2 className="text-3xl font-bold text-center mb-10 text-[#0F172A]">
+    ✨ Featured Products
+  </h2>
+
+  <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-6">
+
+    {filteredProducts.map((product) => (
+      <ProductCard
+        key={product.id}
+        product={product}
+      />
+    ))}
+
+  </div>
+
+</section>
+</div>
+<section className="max-w-4xl mx-auto px-6 py-16">
+
+  <div className="bg-white rounded-3xl shadow-lg p-10 text-center">
+
+    <h2 className="text-4xl font-bold text-[#6D28D9]">
+      Stay Updated
+    </h2>
+
+    <p className="text-gray-500 mt-4">
+      Subscribe to receive updates on new arrivals and exclusive offers.
+    </p>
+
+  </div>
+
+</section>
+{/* Footer */}
+
+<footer className="bg-[#0F172A] text-white mt-20">
+
+  <div className="max-w-7xl mx-auto px-10 py-12 grid md:grid-cols-3 gap-10">
+
+    {/* Brand */}
+
+    <div>
+      <h2 className="text-3xl font-bold text-[#A78BFA]">
+        NovaCart
+      </h2>
+
+      <p className="mt-4 text-gray-300">
+        Discover. Shop. Enjoy.
+      </p>
+
+      <p className="mt-2 text-gray-400 text-sm">
+        Premium shopping experience with
+        modern design and seamless cart management.
+      </p>
     </div>
+
+    {/* Quick Links */}
+
+    <div>
+      <h3 className="text-xl font-semibold mb-4">
+        Quick Links
+      </h3>
+
+      <ul className="space-y-2 text-gray-300">
+        <li className="hover:text-[#A78BFA] transition">
+          <Link href="/">Home</Link>
+        </li>
+        <li className="hover:text-[#A78BFA] transition">
+          <Link href="/cart">Cart</Link>
+        </li>
+      </ul>
+    </div>
+
+    {/* Contact */}
+
+    <div>
+      <h3 className="text-xl font-semibold mb-4">
+        Contact
+      </h3>
+
+      <p className="text-gray-300">
+        support@novacart.com
+      </p>
+
+      <p className="text-gray-300 mt-2">
+        +91 xxxxx xxxxx
+      </p>
+
+      <p className="text-gray-300 mt-2">
+        Chennai, India
+      </p>
+    </div>
+
+  </div>
+
+  <div className="border-t border-gray-700 py-4 text-center text-gray-400 text-sm">
+
+    © 2026 NovaCart. All Rights Reserved.
+
+  </div>
+
+</footer>
+
+    </main>
+    
   );
 }
